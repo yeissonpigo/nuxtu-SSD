@@ -8,6 +8,10 @@
     <title>INS</title>
 </head>
 <body>
-    <form action="{% url 'upload'%}" method="post"></form>
+    <form action="{% url 'upload'%}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{form}}
+        <button type="submit">Cargar</button>
+    </form>
 </body>
 </html>

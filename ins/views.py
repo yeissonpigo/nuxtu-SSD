@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from .forms import UploadFileForm
-from .templates.ins import *
+import pandas as pd
 
 # Create your views here.
 
@@ -15,9 +15,14 @@ def index(request):
 def upload_file(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
+        print(form.is_valid())
         if form.is_valid():
-            #handle_uploaded_file(request.FILES['file'])
-            return HttpResponse('/success/url/')
+            my_file = request.FILES[list(request.FILES.keys())[0]]
+            my_pd = pd.read_csv(my_file)
+            print(f'CHECK HERE {my_pd}')
     else:
         form = UploadFileForm()
     return render(request, 'ins/upload.html', {'form': form})
+
+def fatality_per_gender(request, my_pd):
+    return 0
