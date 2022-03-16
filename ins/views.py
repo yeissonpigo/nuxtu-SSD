@@ -20,8 +20,8 @@ def upload_file(request):
             my_file = request.FILES[list(request.FILES.keys())[0]]
             my_pd = pd.read_csv(my_file).head(10000)
             print(f'CHECK HERE {my_pd}')
-            rate_man = fatality_per_gender(request, my_pd, 'M')
-            rate_woman = fatality_per_gender(request, my_pd, 'F')
+            rate_man = fatality_per_gender(my_pd, 'M')
+            rate_woman = fatality_per_gender(my_pd, 'F')
     else:
         form = UploadFileForm()
     return render(request, 'ins/upload.html', {'form': form})
