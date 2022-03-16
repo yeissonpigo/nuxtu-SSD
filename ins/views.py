@@ -19,9 +19,14 @@ def upload_file(request):
         if form.is_valid():
             my_file = request.FILES[list(request.FILES.keys())[0]]
             my_pd = pd.read_csv(my_file).head(10000)
-            print(f'CHECK HERE {my_pd}')
+            #Check rate per gender
             rate_man = fatality_per_gender(my_pd, 'M')
             rate_woman = fatality_per_gender(my_pd, 'F')
+            #Counts values per Estado column
+            count_categorical_values = my_pd['Estado'].value_counts()
+
+            labels = list(set(my_pd['Estado']))
+            data = count_categorical_values.values.tolist()
     else:
         form = UploadFileForm()
     return render(request, 'ins/upload.html', {'form': form})
