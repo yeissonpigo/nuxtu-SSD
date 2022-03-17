@@ -1,11 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
 </head>
+
 <body>
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    <p>The result from your csv: <br>
+        Dead rate men: {{ rate_man }} <br>
+        Dead rate women: {{ rate_woman }} <br>
+        Mean of the age on dead patients: {{ mean }} <br>
+        Standard deviation of the age on dead patients: {{ std }} <br>
+        Top 3 cities with most dead cases: {{ highest_cities }} <br>
+        Top 3 cities with least dead cases: {{ lowest_cities }} <br>
+    </p>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const data = {
+        labels: {{pie_values.0|safe}},
+        datasets: [{
+            label: 'My First Dataset',
+            data: {{pie_values.1}},
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    const config = {
+        type: 'pie',
+        data: data,
+    };
+</script>
+<script>
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+</script>
+
 </html>

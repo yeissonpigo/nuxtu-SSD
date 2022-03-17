@@ -19,37 +19,34 @@ def upload_file(request):
         if form.is_valid():
             my_file = request.FILES[list(request.FILES.keys())[0]]
             my_pd = pd.read_csv(my_file).head(10000)
+            
             #Check rate per gender
             rate_man = fatality_per_gender(my_pd, 'M')
             rate_woman = fatality_per_gender(my_pd, 'F')
-            #Counts values per Estado column
-            count_categorical_values = my_pd['Estado'].value_counts()
-
-            labels = list(set(my_pd['Estado']))
-            data = count_categorical_values.values.tolist()
+            
+            #Gets pie chart values
+            pie_values = get_categorical(my_pd, 'Estado')
             
             #Calculate mean
             #Not taken into account 'Unidad de medida de edad'
-            age_mean = my_pd[my_pd['Estado'] == 'Fallecido']
-            age_mean = my_pd['Edad'].mean()
+            mean = get_mean(my_pd, 'Estado', 'Edad', 'Fallecido')
             
             #Calculate standard deviation
-            age_std = my_pd[my_pd['Estado'] == 'Fallecido']
-            age_std = my_pd['Edad'].std()
+            std = get_std(my_pd, 'Estado', 'Edad', 'Fallecido')
             
             #Top 3 highest dead cities
             #value_counts() returns the result on descending order
             highest_cities = list(my_pd['Nombre municipio'].value_counts().head(3).index)
-            
+            lowest_cities = list(my_pd['Nombre municipio'].value_counts().tail(3).index)
             #Data to be sent to the template
             data = {
-                'labels': labels, 
-                'data': data, 
+                'pie_values': pie_values,
                 'rate_man': rate_man, 
                 'rate_woman': rate_woman, 
-                'age_mean': age_mean,
-                'age_std': age_std,
+                'mean': mean,
+                'std': std,
                 'highest_cities': highest_cities,
+                'lowest_cities': lowest_cities,
             }
             
             return render(request, 'ins/dashboard.html', data)
@@ -67,7 +64,42 @@ def fatality_per_gender(my_pd, gender):
     dead = gender.loc[gender['Estado']=='Fallecido']
     percentage = dead.shape[0]/gender.shape[0]
     
-    #print(f'CHECK HERE {gender}')
-    #print(f'CHECK HERE {dead}')
-    #print(f'CHECK HERE {percentage}')
     return percentage
+
+# get_categorical get the categorical values of a given column index, and calculates how many times the value appears on the dataframe
+# @my_pd: pandas dataframe containing Sexo and Estado indexes
+# @column_name: string which must match a column name from @my_pd
+# return result: returns a list, with the labels and values for a pie chart in chart.js
+
+def get_categorical(my_pd, column_name):
+    count_categorical_values = my_pd[column_name].value_counts()
+    labels = list(set(my_pd['Estado']))
+    labels = [x for x in labels if str(x) != 'nan']
+    data = count_categorical_values.values.tolist()
+    result = [labels, data]
+    print(labels)
+    return result
+
+# get_mean calculates the mean of a given column name from a given dataframe, of a given categorical value
+# @my_pd: pandas dataframe containing Sexo and Estado indexes
+# @column_filter: string which must match a column name from @my_pd to be filtered
+# @column_mean: string which must match a column name from @my_pd to calculate mean
+# @value_filter: string which must match a categorical value from @column_filter
+# return mean: returns the mean value
+
+def get_mean(my_pd, column_filter, column_mean, value_filter):
+    my_pd[my_pd[column_filter] == value_filter]
+    mean = my_pd[column_mean].mean()
+    return mean
+
+# get_std calculates the standard deviation of a given column name from a given dataframe, of a given categorical value
+# @my_pd: pandas dataframe containing Sexo and Estado indexes
+# @column_filter: string which must match a column name from @my_pd to be filtered
+# @column_mean: string which must match a column name from @my_pd to calculate mean
+# @value_filter: string which must match a categorical value from @column_filter
+# return std: returns the standard deviation value
+
+def get_std(my_pd, column_filter, column_mean, value_filter):
+    my_pd[my_pd[column_filter] == value_filter]
+    std = my_pd[column_mean].std()
+    return std
