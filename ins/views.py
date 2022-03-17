@@ -112,7 +112,7 @@ def get_std(my_pd, column_filter, column_mean, value_filter):
 # @value_filter: string which must match a categorical value from @column_filter
 # return std: returns the standard deviation value
 
-def get_std(my_pd, column_filter, column_mean, value_filter):
+def get_std_(my_pd, column_filter, column_mean, value_filter):
     my_pd[my_pd[column_filter] == value_filter]
     std = my_pd[column_mean].std()
     return std

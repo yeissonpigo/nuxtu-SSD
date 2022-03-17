@@ -6,3 +6,13 @@
 ***REMEMBER***: We will only evaluate your work up to the last commit before the deadline.
 
 ___We wish you the best of luck.___
+
+This solution implements pandas library which allows the developer to easily
+convert a csv file into a dataframe, this last type of variable, eases the
+calculation of all the data that was required by the customer.
+
+Every function used has a brief explanation on the top.
+
+Chart.js library has been used to generate the pie chart, since it is easily used
+with pandas dataframe and lists.
+
