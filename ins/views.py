@@ -27,6 +27,32 @@ def upload_file(request):
 
             labels = list(set(my_pd['Estado']))
             data = count_categorical_values.values.tolist()
+            
+            #Calculate mean
+            #Not taken into account 'Unidad de medida de edad'
+            age_mean = my_pd[my_pd['Estado'] == 'Fallecido']
+            age_mean = my_pd['Edad'].mean()
+            
+            #Calculate standard deviation
+            age_std = my_pd[my_pd['Estado'] == 'Fallecido']
+            age_std = my_pd['Edad'].std()
+            
+            #Top 3 highest dead cities
+            #value_counts() returns the result on descending order
+            highest_cities = list(my_pd['Nombre municipio'].value_counts().head(3).index)
+            
+            #Data to be sent to the template
+            data = {
+                'labels': labels, 
+                'data': data, 
+                'rate_man': rate_man, 
+                'rate_woman': rate_woman, 
+                'age_mean': age_mean,
+                'age_std': age_std,
+                'highest_cities': highest_cities,
+            }
+            
+            return render(request, 'ins/dashboard.html', data)
     else:
         form = UploadFileForm()
     return render(request, 'ins/upload.html', {'form': form})
