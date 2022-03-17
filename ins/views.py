@@ -38,6 +38,7 @@ def upload_file(request):
             #value_counts() returns the result on descending order
             highest_cities = list(my_pd['Nombre municipio'].value_counts().head(3).index)
             lowest_cities = list(my_pd['Nombre municipio'].value_counts().tail(3).index)
+            
             #Data to be sent to the template
             data = {
                 'pie_values': pie_values,
@@ -77,7 +78,7 @@ def get_categorical(my_pd, column_name):
     labels = [x for x in labels if str(x) != 'nan']
     data = count_categorical_values.values.tolist()
     result = [labels, data]
-    print(labels)
+    print(count_categorical_values)
     return result
 
 # get_mean calculates the mean of a given column name from a given dataframe, of a given categorical value
@@ -93,6 +94,18 @@ def get_mean(my_pd, column_filter, column_mean, value_filter):
     return mean
 
 # get_std calculates the standard deviation of a given column name from a given dataframe, of a given categorical value
+# @my_pd: pandas dataframe containing Sexo and Estado indexes
+# @column_filter: string which must match a column name from @my_pd to be filtered
+# @column_mean: string which must match a column name from @my_pd to calculate mean
+# @value_filter: string which must match a categorical value from @column_filter
+# return std: returns the standard deviation value
+
+def get_std(my_pd, column_filter, column_mean, value_filter):
+    my_pd[my_pd[column_filter] == value_filter]
+    std = my_pd[column_mean].std()
+    return std
+
+# get_mean_date calculates the mean deviation of a given column name from a given dataframe, of a given categorical value
 # @my_pd: pandas dataframe containing Sexo and Estado indexes
 # @column_filter: string which must match a column name from @my_pd to be filtered
 # @column_mean: string which must match a column name from @my_pd to calculate mean
